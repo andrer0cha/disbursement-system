@@ -1,13 +1,5 @@
 # frozen_string_literal: true
 
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
-
 merchants = JSON.parse(File.open('db/dataset/merchants.json').read)['RECORDS']
 shoppers = JSON.parse(File.open('db/dataset/shoppers.json').read)['RECORDS']
 orders = JSON.parse(File.open('db/dataset/orders.json').read)['RECORDS']
@@ -48,8 +40,7 @@ ActiveRecord::Base.transaction do
       merchant: Merchant.find(order['merchant_id']),
       shopper: Shopper.find(order['shopper_id']),
       amount: order['amount'],
-      created_at: order['created_at'],
-      completed_at: order['completed_at']
+      completed_at: [nil, Date.today - rand(10).days].sample
     )
     count += 1
   end

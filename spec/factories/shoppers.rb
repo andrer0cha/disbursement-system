@@ -2,12 +2,8 @@
 
 FactoryBot.define do
   factory :shopper do
-    sequence :email do |n|
-      email { "mike#{n}@shoper.com" }
-    end
-    sequence :name do |n|
-      name { "Mike #{n}" }
-    end
-    cif { SecureRandom.hex }
+    email { Faker::Internet.email }
+    name { Faker::Name.name }
+    nif { SecureRandom.hex }
   end
 end
