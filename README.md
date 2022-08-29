@@ -71,6 +71,8 @@ Running the command above will put it in the queue to be run later but will not 
 
 ## Possible Future Improvements
 - Add retries to `rake 'calculators:weekly_disbursement'` task in case of any errors
+- Make the application JSONAPI complient
+- Add serializers to better present data
 - Add fixtures to avoid creation of many entities during tests
 - Add authorization/authentication
 - Add `eager_load` gem to track and avoid n+1 queries
