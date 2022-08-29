@@ -7,4 +7,5 @@ class Disbursement < ApplicationRecord
 
   validates :applied_fee, presence: true, inclusion: { in: AVAILABLE_FEES }
   validates :total, presence: true
+  validates :related_week, presence: true
 end

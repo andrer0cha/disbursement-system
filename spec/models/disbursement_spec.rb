@@ -12,5 +12,6 @@ RSpec.describe Disbursement, type: :model do
     it { is_expected.to validate_inclusion_of(:applied_fee).in_array(described_class::AVAILABLE_FEES) }
 
     it { is_expected.to validate_presence_of(:total) }
+    it { is_expected.to validate_presence_of(:related_week) }
   end
 end
