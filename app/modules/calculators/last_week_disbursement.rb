@@ -6,10 +6,13 @@ module Calculators
       merchants.each do |merchant|
         total = merchant.orders.sum(:amount)
 
+        next if ::Disbursement.where(merchant:, related_week: start_date.to_date.cweek).any?
+
         ::Disbursement.create!(
           merchant:,
           applied_fee: fee_value(total),
-          total: (fee_value(total) * total)
+          total: (fee_value(total) * total),
+          related_week: start_date.to_date.cweek
         )
       end
     end

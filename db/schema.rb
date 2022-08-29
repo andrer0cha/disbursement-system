@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_29_002453) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_29_150017) do
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer "priority", default: 0, null: false
     t.integer "attempts", default: 0, null: false
@@ -32,6 +32,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_29_002453) do
     t.decimal "total", default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "related_week", default: 0, null: false
     t.index ["merchant_id"], name: "index_disbursements_on_merchant_id"
   end
 

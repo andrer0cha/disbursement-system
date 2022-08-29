@@ -4,9 +4,18 @@ require 'rails_helper'
 
 RSpec.describe Calculators::LastWeekDisbursement, :run_delayed_jobs do
   let!(:completed_orders) do
-    create_list :order, completed_orders_count, :completed
+    [cheap_orders, medium_orders, expensive_orders].flatten
   end
-  let(:completed_orders_count) { 10 }
+  let(:cheap_orders) do
+    create_list :order, 3, :completed, amount: rand(49) + rand.round(2)
+  end
+  let(:medium_orders) do
+    create_list :order, 5, :completed, amount: rand(50..300) + rand.round(2)
+  end
+  let(:expensive_orders) do
+    create_list :order, 2, :completed, amount: rand(300..999) + rand.round(2)
+  end
+  let(:completed_orders_count) { cheap_orders.size + medium_orders.size + expensive_orders.size }
 
   subject(:calculator_service) { described_class.new }
 
@@ -15,10 +24,6 @@ RSpec.describe Calculators::LastWeekDisbursement, :run_delayed_jobs do
   end
 
   context 'when the order amount is less than 50' do
-    let(:cheap_orders) do
-      completed_orders.select { |x| x.amount < 50 }
-    end
-
     it 'sets the applied fee as 0.01' do
       calculator_service.call
       created_disbursements = Disbursement.all.where(merchant_id: cheap_orders.pluck(:merchant_id))
@@ -43,10 +48,6 @@ RSpec.describe Calculators::LastWeekDisbursement, :run_delayed_jobs do
   end
 
   context 'when the order amount is greather or equal 50 and less than or equal 300' do
-    let(:medium_orders) do
-      completed_orders.select { |x| x.amount >= 50 && x.amount <= 300 }
-    end
-
     it 'sets the applied fee as 0.0095' do
       calculator_service.call
       created_disbursements = Disbursement.all.where(merchant_id: medium_orders.pluck(:merchant_id))
@@ -71,10 +72,6 @@ RSpec.describe Calculators::LastWeekDisbursement, :run_delayed_jobs do
   end
 
   context 'when the order amount is greather than 300' do
-    let(:expensive_orders) do
-      completed_orders.select { |x| x.amount > 300 }
-    end
-
     it 'sets the applied fee as 0.0085' do
       calculator_service.call
       created_disbursements = Disbursement.all.where(merchant_id: expensive_orders.pluck(:merchant_id))
@@ -120,11 +117,20 @@ RSpec.describe Calculators::LastWeekDisbursement, :run_delayed_jobs do
     end
 
     before do
-      completed_orders.map(&:destroy)
+      Order.where.not(completed_at: nil).destroy_all
     end
 
     it 'does not create disbursements' do
       expect { calculator_service.call }.not_to change(Disbursement, :count)
+    end
+  end
+
+  context 'when the service is run twice' do
+    it 'only computes once per merchant' do
+      calculator_service.call
+      calculator_service.call
+
+      expect(Disbursement.count).to eq(completed_orders_count)
     end
   end
 end
