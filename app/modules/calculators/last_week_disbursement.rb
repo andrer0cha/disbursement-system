@@ -22,11 +22,11 @@ module Calculators
     end
 
     def start_date
-      (Date.today.beginning_of_week - 1.week).beginning_of_day
+      (Time.zone.today.beginning_of_week - 1.week).beginning_of_day
     end
 
     def end_date
-      (Date.today.end_of_week - 1.week).end_of_day
+      (Time.zone.today.end_of_week - 1.week).end_of_day
     end
 
     def fee_value(amount)
