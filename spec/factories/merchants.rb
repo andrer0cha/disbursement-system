@@ -2,12 +2,14 @@
 
 FactoryBot.define do
   factory :merchant do
-    sequence :email do |n|
-      email { "john#{n}@merchant.com" }
-    end
-    sequence :name do |n|
-      name { "John #{n}" }
-    end
+    email { Faker::Internet.email }
+    name { Faker::Name.name }
     cif { SecureRandom.hex }
+
+    trait :with_orders do
+      after(:create) do |merchant|
+        create_list :order, 5, :completed, merchant:
+      end
+    end
   end
 end

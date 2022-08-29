@@ -3,9 +3,12 @@
 FactoryBot.define do
   factory :order do
     association :merchant
-    association :shoper
-    amount  { rand.round(2) }
-    completed_at { Date.today-((0..10).rand.days) }
-    cif { SecureRandom.hex }
+    association :shopper
+    amount { rand(999) + rand.round(2) }
+    completed_at { nil }
+
+    trait :completed do
+      completed_at { Time.zone.today.beginning_of_week - rand(1..6).days }
+    end
   end
 end
