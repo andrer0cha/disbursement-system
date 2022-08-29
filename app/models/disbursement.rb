@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Disbursement < ApplicationRecord
-  AVAILABLE_FEES = [1, 0.95, 0.85].freeze
+  AVAILABLE_FEES = [0.01, 0.0095, 0.0085].freeze
 
   belongs_to :merchant
 
