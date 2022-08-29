@@ -3,7 +3,10 @@
 module Calculators
   class LastWeekDisbursement
     def call
+      current_disbursements = ::Disbursement.all.count
       merchants.each do |merchant|
+        Rails.logger.debug "Processing data for merchant: #{merchant.id}"
+        Rails.logger.debug "    Number of orders: #{merchant.orders.size}"
         total = merchant.orders.sum(:amount)
 
         next if ::Disbursement.where(merchant:, related_week: start_date.to_date.cweek).any?
@@ -15,6 +18,7 @@ module Calculators
           related_week: start_date.to_date.cweek
         )
       end
+      Rails.logger.debug "#{::Disbursement.all.count - current_disbursements} disbursements created."
     end
     handle_asynchronously :call
 
